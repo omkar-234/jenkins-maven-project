@@ -11,7 +11,7 @@ pipeline {
         APP_NAME = 'jenkins-maven-project'
         BUILD_VERSION = "${env.BUILD_NUMBER}"
         MAVEN_OPTS = '-Dmaven.test.failure.ignore=false'
-        DOCKER_IMAGE = "atuljkamble/${APP_NAME}"
+        DOCKER_IMAGE = "omkarbachche8022/${APP_NAME}"
         DOCKER_TAG = "${env.BUILD_NUMBER}"
         PORT = '5000'
     }
@@ -227,7 +227,7 @@ pipeline {
                         sh """
                             sudo docker stop ${env.APP_NAME} 2>/dev/null || true
                             sudo docker rm ${env.APP_NAME} 2>/dev/null || true
-                            sudo docker run -d -p 5000:5000 --name ${env.APP_NAME} atuljkamble/jenkins-maven-project
+                            sudo docker run -d -p 5000:5000 --name ${env.APP_NAME} omkarbachche8022/jenkins-maven-project
                         """
                         echo "✓ Docker container created successfully"
                         sh "sudo docker ps | grep ${env.APP_NAME}"
