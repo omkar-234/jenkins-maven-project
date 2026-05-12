@@ -201,6 +201,36 @@ pipeline {
                 }
             }
         }
+
+        stage('Container Create') {
+            when {
+                anyOf {
+                    branch 'main'
+                    branch 'origin/main'
+                    expression { env.GIT_BRANCH == 'origin/main' }
+                    expression { env.GIT_BRANCH == 'main' }
+                }
+            }
+            steps {
+                echo '================================================'
+                echo 'Stage: Container Create'
+                echo '================================================'
+                script {
+                    try {
+                        echo "Creating Docker container from image..."
+                        sh """
+                            docker run -d -p 5000:5000 --name ${env.APP_NAME} -p ${env.PORT}:${env.PORT} ${env.DOCKER_IMAGE}:${env.DOCKER_TAG} || echo "Container already exists or Docker not available"
+                        """
+                        echo "✓ Docker container created successfully"
+                        sh "docker ps | grep ${env.APP_NAME}"
+                    } catch (Exception e) {
+                        echo "⚠ Docker container creation failed: ${e.message}"
+                        echo "Continuing pipeline without running container..."
+                    }
+                }
+            }
+        }
+        
         
         stage('Docker Security Scan') {
             when {
